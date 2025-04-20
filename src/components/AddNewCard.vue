@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import type { FormItemRule } from 'element-plus'
 import { ElDialog, ElForm, ElFormItem, ElInput, ElButton } from 'element-plus'
 import { useCardsStore } from '@/stores/cards'
 
@@ -36,7 +37,7 @@ const errorMessage = ref<string>('')
 const rules = {
   cardName: [
     {
-      validator: (rule: any, value: string, callback: (error?: Error) => void) => {
+      validator: (rule: FormItemRule, value: string, callback: (error?: Error) => void) => {
         if (!/^[A-Z]/.test(value)) {
           errorMessage.value = 'Card name must start with a capital letter'
           callback(new Error(errorMessage.value))
