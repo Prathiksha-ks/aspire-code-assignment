@@ -1,0 +1,21 @@
+@use '@/styles/variables.scss' as *;
+
+.inner {
+  fill: $prussian-blue;
+}
+.outer {
+  fill: $white;
+
+  &.clicked-icon {
+    fill: $green;
+  }
+}
+
+@media (max-width: 1024px) {
+  .inner {
+    fill: $white;
+  }
+  .outer {
+    fill: $light-grey;
+  }
+}
