@@ -2,6 +2,13 @@ import { describe, it, expect } from 'vitest'
 import { shallowMount } from '@vue/test-utils'
 import DetailsContainer from '../DetailsContainer.vue'
 
+// Mock the getImageUrl function
+vi.mock('@/utils/index', () => ({
+  getImageUrl: vi.fn(() => {
+    return '/src/assets/test-icon.svg'
+  }),
+}))
+
 describe('DetailsContainer.vue', () => {
   it('renders the component with props', () => {
     const wrapper = shallowMount(DetailsContainer, {

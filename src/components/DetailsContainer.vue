@@ -2,7 +2,7 @@
   <div class="details-container">
     <div class="header-content">
       <div class="right">
-        <img :src="`/src/assets/${icon}.svg`" alt="icon" />
+        <img :src="getImageUrl(icon)" alt="icon" />
         <p>{{ text }}</p>
       </div>
       <img
@@ -18,6 +18,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { getImageUrl } from '@/utils'
 
 defineProps({
   text: {

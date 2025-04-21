@@ -9,7 +9,7 @@
           @click="action.action"
           class="action-item"
         >
-          <img :src="`/src/assets/${action.icon}.svg`" alt="action icon" />
+          <img :src="getImageUrl(action.icon)" alt="action icon" />
           <p>{{ action.title }}</p>
         </div>
       </div>
@@ -32,7 +32,7 @@
             <li v-for="transaction in getTransactions" :key="transaction.id">
               <div class="right">
                 <div class="transaction-icon">
-                  <img :src="`/src/assets/${transaction.image}.svg`" alt="transaction icon" />
+                  <img :src="getImageUrl(transaction.image)" alt="transaction icon" />
                 </div>
                 <div class="content">
                   <p class="name">{{ transaction.name }}</p>
@@ -65,6 +65,7 @@ import { computed, onMounted, ref } from 'vue'
 import DebitCards from './DebitCards.vue'
 import { CardStatus, TransactionType, type DebitCard } from '@/types'
 import DetailsContainer from './DetailsContainer.vue'
+import { getImageUrl } from '@/utils'
 
 const store = useCardsStore()
 const debitCardsDetails = ref<DebitCard[]>(store.debitCardsDetails)
