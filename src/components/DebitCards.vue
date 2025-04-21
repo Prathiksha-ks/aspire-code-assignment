@@ -1,9 +1,8 @@
 <template>
   <div class="debit-cards">
-    <button class="show-card-number" @click="isShowCardNumber = !isShowCardNumber">
+    <button class="show-card-number" @click="toggleCardNumber">
       <img src="@/assets/show-eye-icon.svg" alt="eye icon" />
-      <p v-if="isShowCardNumber">Hide card number</p>
-      <p v-else>Show card number</p>
+      <p>{{ isShowCardNumber ? 'Hide card number' : 'Show card number' }}</p>
     </button>
     <el-carousel
       :interval="2000"
@@ -23,12 +22,12 @@
           <template v-if="!isShowCardNumber">
             <div class="dot" v-for="dot in 12" :key="dot" />
           </template>
-          {{ getFormatedCardNumber(card.cardNumber) }}
+          {{ formatCardNumber(card.cardNumber) }}
         </div>
-        <div class="crad-expiry-cvv">
+        <div class="card-expiry-cvv">
           <p class="expiry">Thru: {{ card.expiryDate }}</p>
           <p class="cvv">
-            CVV: <span>{{ getFormatedCardCvv(card.cardCvv) }}</span>
+            CVV: <span>{{ formatCardCvv(card.cardCvv) }}</span>
           </p>
         </div>
         <img src="@/assets/visa-logo.svg" alt="visa logo" />
@@ -52,27 +51,18 @@ const emit = defineEmits(['currentCard'])
 
 const isShowCardNumber = ref<boolean>(false)
 
-const getFormatedCardNumber = (cardNumber: string) => {
-  // Remove - betrween 4 digits
-  cardNumber = cardNumber.replace(/-/g, ' ')
-  if (isShowCardNumber.value) {
-    return cardNumber
-  }
-  return cardNumber.slice(-4)
+const toggleCardNumber = () => {
+  isShowCardNumber.value = !isShowCardNumber.value
 }
 
-const getFormatedCardCvv = (cardCvv: number) => {
-  // Convert to string and replace digits with '*'
-  return cardCvv.toString().replace(/\d/g, '*')
-}
+const formatCardNumber = (cardNumber: string) =>
+  isShowCardNumber.value ? cardNumber.replace(/-/g, ' ') : cardNumber.slice(-4)
 
-const isFrozen = (cardStatus: CardStatus) => {
-  return cardStatus === CardStatus.FROZEN
-}
+const formatCardCvv = (cardCvv: number) => '*'.repeat(cardCvv.toString().length)
 
-const onChange = (index: number) => {
-  emit('currentCard', index)
-}
+const isFrozen = (cardStatus: CardStatus) => cardStatus === CardStatus.FROZEN
+
+const onChange = (index: number) => emit('currentCard', index)
 </script>
 
 <style lang="scss" scoped>
@@ -158,7 +148,7 @@ const onChange = (index: number) => {
     }
   }
 
-  .crad-expiry-cvv {
+  .card-expiry-cvv {
     @include flex;
     margin-top: 16px;
     font-size: 13px;

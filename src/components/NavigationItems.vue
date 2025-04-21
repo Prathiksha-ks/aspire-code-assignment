@@ -6,8 +6,8 @@
     @click="navigateTo(icon.title)"
     role="button"
   >
-    <component :is="icon.component" :isClicked="isClicked(icon.title)" />
-    <span :class="['title', { clicked: isClicked(icon.title) }]">{{ icon.title }}</span>
+    <component :is="icon.component" :isClicked="isActive(icon.title)" />
+    <span :class="['title', { clicked: isActive(icon.title) }]">{{ icon.title }}</span>
   </div>
 </template>
 
@@ -32,21 +32,18 @@ const iconsList = [
   { component: ProfileIcon, title: 'Profile' },
 ]
 
-const isClicked = (title: string) => activeIcon.value === title
+const isActive = (title: string) => activeIcon.value === title
 
 const navigateTo = (title: string) => {
   activeIcon.value = title
-  const routeName = title.toLowerCase()
-  router.push({ name: routeName })
+  router.push({ name: title.toLowerCase() })
 }
 
 watch(
   () => route.name,
   (newRouteName) => {
-    const icon = iconsList.find((icon) => icon.title.toLowerCase() === newRouteName)
-    if (icon) {
-      activeIcon.value = icon.title
-    }
+    const matchedIcon = iconsList.find((icon) => icon.title.toLowerCase() === newRouteName)
+    if (matchedIcon) activeIcon.value = matchedIcon.title
   },
   { immediate: true },
 )

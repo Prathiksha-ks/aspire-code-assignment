@@ -107,7 +107,7 @@ const debitCardsDetails: DebitCard[] = [
     expiryDate: '12/22',
     cardType: 'Visa',
     cardCvv: 123,
-    cardStatus: CardStatus.UNFROZEN,
+    cardStatus: CardStatus.FROZEN,
     transactions: [],
   },
 ]

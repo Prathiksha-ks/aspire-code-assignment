@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" @close="resetForm">
+  <el-dialog v-model="dialogVisible" @close="resetForm" width="75%">
     <h1 class="dialog-title">Add new card</h1>
     <div class="dialog-content">
       <el-form :model="{ cardName }" :rules="rules" label-width="120px">

@@ -17,11 +17,13 @@
     <div class="other-details">
       <DetailsContainer text="Card details" icon="card-details-icon">
         <template #details>
-          <p>Card Name: {{ currentCardDetils.cardName }}</p>
-          <p>Card Number: {{ currentCardDetils.cardNumber }}</p>
-          <p>Expiry Date: {{ currentCardDetils.expiryDate }}</p>
-          <p>CVV: {{ currentCardDetils.cardCvv }}</p>
-          <p>Card Status: {{ currentCardDetils.cardStatus }}</p>
+          <div class="card-details">
+            <p>Card Name: {{ currentCardDetails.cardName }}</p>
+            <p>Card Number: {{ currentCardDetails.cardNumber }}</p>
+            <p>Expiry Date: {{ currentCardDetails.expiryDate }}</p>
+            <p>CVV: {{ currentCardDetails.cardCvv }}</p>
+            <p>Card Status: {{ currentCardDetails.cardStatus }}</p>
+          </div>
         </template>
       </DetailsContainer>
       <DetailsContainer text="Recent transactions" icon="transaction-icon">
@@ -49,8 +51,8 @@
               </div>
             </li>
           </ul>
-          <p v-else>No data</p>
-          <p v-if="currentCardDetils.transactions.length > 4" class="view-details">
+          <p v-else class="no-data">No data</p>
+          <p v-if="currentCardDetails.transactions.length > 4" class="view-details">
             View all card transactions
           </p>
         </template>
@@ -68,7 +70,7 @@ import DetailsContainer from './DetailsContainer.vue'
 
 const store = useCardsStore()
 const debitCardsDetails = ref<DebitCard[]>(store.debitCardsDetails)
-const currentCardDetils = ref<DebitCard>({
+const currentCardDetails = ref<DebitCard>({
   cardName: '',
   cardNumber: '',
   cardCvv: 0,
@@ -83,7 +85,7 @@ const getFrozenCardTitle = computed(() => {
 })
 
 const isFrozen = computed(() => {
-  return currentCardDetils.value?.cardStatus === CardStatus.FROZEN
+  return currentCardDetails.value?.cardStatus === CardStatus.FROZEN
 })
 
 const cardActions = [
@@ -117,7 +119,7 @@ const cardActions = [
 ]
 
 const updateCardStatus = async () => {
-  const cardName = currentCardDetils.value?.cardName
+  const cardName = currentCardDetails.value?.cardName
   const newCardStatus = isFrozen.value ? CardStatus.UNFROZEN : CardStatus.FROZEN
   try {
     await store.dispatchUpdateDebitCardStatus(cardName, newCardStatus)
@@ -128,7 +130,7 @@ const updateCardStatus = async () => {
 }
 
 const currentCard = (index: number) => {
-  currentCardDetils.value = debitCardsDetails.value[index]
+  currentCardDetails.value = debitCardsDetails.value[index]
 }
 
 const getFinanceText = (type: TransactionType): string => {
@@ -141,7 +143,7 @@ const getAmountWithUnit = (type: TransactionType, amount: number): string => {
 }
 
 const getTransactions = computed(() => {
-  return currentCardDetils.value?.transactions.slice(0, 4)
+  return currentCardDetails.value?.transactions.slice(0, 4)
 })
 
 onMounted(() => {

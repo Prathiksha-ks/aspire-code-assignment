@@ -1,11 +1,7 @@
 <template>
   <main class="cards-view">
-    <template v-if="isLoading">
-      <p>Loading...</p>
-    </template>
-    <template v-else-if="isError">
-      <p>Error loading data</p>
-    </template>
+    <p v-if="isLoading" class="loading">Loading...</p>
+    <p v-else-if="isError" class="error">Error loading data</p>
     <template v-else>
       <p class="title">Available balance</p>
       <div class="balance-container">
@@ -22,9 +18,9 @@
         <el-tab-pane label="My debit cards" name="Debit cards">
           <MyDebitCards />
         </el-tab-pane>
-        <el-tab-pane label="All company cards" name="Company cards"
-          >All company cards Details</el-tab-pane
-        >
+        <el-tab-pane label="All company cards" name="Company cards">
+          All company cards Details
+        </el-tab-pane>
       </el-tabs>
       <AddNewCard
         v-model="isAddNewCardVisible"
@@ -36,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { ElTabs, ElTabPane } from 'element-plus'
 import MyDebitCards from '@/components/MyDebitCards.vue'
 import { useCardsStore } from '@/stores/cards'
@@ -50,11 +46,11 @@ const isError = ref<boolean>(false)
 const isAddNewCardVisible = ref<boolean>(false)
 const store = useCardsStore()
 
-onMounted(() => {
-  getDebitCardsDetails()
+onBeforeMount(() => {
+  fetchDebitCards()
 })
 
-const getDebitCardsDetails = async () => {
+const fetchDebitCards = async () => {
   // Simulate an API call to fetch debit cards details
   // Used some random userId = 1
   try {
@@ -62,7 +58,7 @@ const getDebitCardsDetails = async () => {
     await store.dispatchGetDebitCardsDetails(1)
   } catch (error) {
     isError.value = true
-    console.error('Error fetching debit cards details:', error)
+    console.error('Error fetching debit cards:', error)
   } finally {
     isLoading.value = false
   }
