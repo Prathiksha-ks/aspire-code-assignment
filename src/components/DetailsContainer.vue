@@ -1,6 +1,6 @@
 <template>
   <div class="details-container">
-    <div class="header-content">
+    <div :class="['header-content', { expand: !isClose }]">
       <div class="right">
         <img :src="getImageUrl(icon)" alt="icon" />
         <p>{{ text }}</p>
@@ -43,6 +43,7 @@ const updateIsClose = () => {
   border-radius: 8px;
   box-shadow: 0px 0px 8px #0000000a;
   margin-bottom: 24px;
+  background-color: $white;
 
   .header-content {
     @include flex(row, space-between, center);
@@ -64,6 +65,10 @@ const updateIsClose = () => {
       &.open-icon {
         transform: rotate(180deg);
       }
+    }
+
+    &.expand {
+      border-radius: 8px 8px 0 0;
     }
   }
 

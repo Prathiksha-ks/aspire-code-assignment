@@ -5,10 +5,11 @@
       <p>{{ isShowCardNumber ? 'Hide card number' : 'Show card number' }}</p>
     </button>
     <el-carousel
-      :interval="2000"
+      :interval="5000"
       arrow="never"
       height="auto"
       indicator-position="outside"
+      trigger="click"
       @change="onChange"
     >
       <el-carousel-item

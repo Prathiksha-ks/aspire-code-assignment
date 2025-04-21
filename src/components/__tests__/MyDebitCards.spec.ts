@@ -59,7 +59,7 @@ describe('MyDebitCards.vue', () => {
     const otherDetails = wrapper.find('.other-details')
     const arrowIcon = otherDetails.findAll('.arrow-icon')
     await arrowIcon[0].trigger('click')
-    const cardDetails = wrapper.find('.card-details')
+    const cardDetails = wrapper.find('.details')
     const allCardDetails = cardDetails.findAll('p')
     expect(allCardDetails[0].text()).toContain('Card Name: Mark Henry')
     expect(allCardDetails[1].text()).toContain('Card Number: 1234-5678-9012-2020')

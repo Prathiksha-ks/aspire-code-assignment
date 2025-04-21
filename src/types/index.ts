@@ -35,6 +35,7 @@ export type ApiResponse<T> = Promise<{
 }>
 
 export interface CardStatusUpdateRequest {
-  cardName: string
+  cardIndex: number
   cardStatus: CardStatus
+  debitCardsDetails: DebitCard[]
 }

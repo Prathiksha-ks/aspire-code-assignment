@@ -1,61 +1,64 @@
 <template>
   <div class="container">
-    <div class="debit-cards">
-      <DebitCards :debitCardsDetails="debitCardsDetails" @currentCard="currentCard" />
-      <div class="card-action">
-        <div
-          v-for="action in cardActions"
-          :key="action.icon"
-          @click="action.action"
-          class="action-item"
-        >
-          <img :src="getImageUrl(action.icon)" alt="action icon" />
-          <p>{{ action.title }}</p>
+    <template v-if="debitCardsDetails.length">
+      <div class="debit-cards">
+        <DebitCards :debitCardsDetails="debitCardsDetails" @currentCard="currentCard" />
+        <div class="card-action">
+          <div
+            v-for="action in cardActions"
+            :key="action.icon"
+            @click="action.action"
+            class="action-item"
+          >
+            <img :src="getImageUrl(action.icon)" alt="action icon" />
+            <p>{{ action.title }}</p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="other-details">
-      <DetailsContainer text="Card details" icon="card-details-icon">
-        <template #details>
-          <div class="card-details">
-            <p>Card Name: {{ currentCardDetails.cardName }}</p>
-            <p>Card Number: {{ currentCardDetails.cardNumber }}</p>
-            <p>Expiry Date: {{ currentCardDetails.expiryDate }}</p>
-            <p>CVV: {{ currentCardDetails.cardCvv }}</p>
-            <p>Card Status: {{ currentCardDetails.cardStatus }}</p>
-          </div>
-        </template>
-      </DetailsContainer>
-      <DetailsContainer text="Recent transactions" icon="transaction-icon">
-        <template #details>
-          <ul v-if="getTransactions.length">
-            <li v-for="transaction in getTransactions" :key="transaction.id">
-              <div class="right">
-                <div class="transaction-icon">
-                  <img :src="getImageUrl(transaction.image)" alt="transaction icon" />
-                </div>
-                <div class="content">
-                  <p class="name">{{ transaction.name }}</p>
-                  <p class="date">{{ transaction.date }}</p>
-                  <div class="finance-status">
-                    <img src="@/assets/finance.svg" alt="finance icon" />
-                    <p>{{ getFinanceText(transaction.type) }}</p>
+      <div class="other-details">
+        <DetailsContainer text="Card details" icon="card-details-icon">
+          <template #details>
+            <div class="details">
+              <p>Card Name: {{ getCurrentCardDetails.cardName }}</p>
+              <p>Card Number: {{ getCurrentCardDetails.cardNumber }}</p>
+              <p>Expiry Date: {{ getCurrentCardDetails.expiryDate }}</p>
+              <p>CVV: {{ getCurrentCardDetails.cardCvv }}</p>
+              <p>Card Status: {{ getCurrentCardDetails.cardStatus }}</p>
+            </div>
+          </template>
+        </DetailsContainer>
+        <DetailsContainer text="Recent transactions" icon="transaction-icon">
+          <template #details>
+            <ul v-if="getTransactions.length">
+              <li v-for="transaction in getTransactions" :key="transaction.id">
+                <div class="right">
+                  <div class="transaction-icon">
+                    <img :src="getImageUrl(transaction.image)" alt="transaction icon" />
+                  </div>
+                  <div class="content">
+                    <p class="name">{{ transaction.name }}</p>
+                    <p class="date">{{ transaction.date }}</p>
+                    <div class="finance-status">
+                      <img src="@/assets/finance.svg" alt="finance icon" />
+                      <p>{{ getFinanceText(transaction.type) }}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="left">
-                <p>{{ getAmountWithUnit(transaction.type, transaction.amount) }}</p>
-                <img src="@/assets/arrow-next.svg" alt="arrow next" />
-              </div>
-            </li>
-          </ul>
-          <p v-else class="no-data">No data</p>
-          <p v-if="currentCardDetails.transactions.length > 4" class="view-details">
-            View all card transactions
-          </p>
-        </template>
-      </DetailsContainer>
-    </div>
+                <div class="left">
+                  <p>{{ getAmountWithUnit(transaction.type, transaction.amount) }}</p>
+                  <img src="@/assets/arrow-next.svg" alt="arrow next" />
+                </div>
+              </li>
+            </ul>
+            <p v-else class="no-data details">No data</p>
+            <p v-if="getCurrentCardDetails.transactions.length > 4" class="view-details">
+              View all card transactions
+            </p>
+          </template>
+        </DetailsContainer>
+      </div>
+    </template>
+    <p v-else>No cards available. Please help to add cards</p>
   </div>
 </template>
 
@@ -69,22 +72,22 @@ import { getImageUrl } from '@/utils'
 
 const store = useCardsStore()
 const debitCardsDetails = ref<DebitCard[]>(store.debitCardsDetails)
-const currentCardDetails = ref<DebitCard>({
-  cardName: '',
-  cardNumber: '',
-  cardCvv: 0,
-  expiryDate: '',
-  cardStatus: CardStatus.UNFROZEN,
-  transactions: [],
-  cardType: '',
-})
+const currentCardIndex = ref<number>(0)
 
 const getFrozenCardTitle = computed(() => {
   return isFrozen.value ? 'Unfreeze card' : 'Freeze card'
 })
 
 const isFrozen = computed(() => {
-  return currentCardDetails.value?.cardStatus === CardStatus.FROZEN
+  return debitCardsDetails.value[currentCardIndex.value].cardStatus === CardStatus.FROZEN
+})
+
+const getCurrentCardDetails = computed((): DebitCard => {
+  return debitCardsDetails.value[currentCardIndex.value]
+})
+
+const getTransactions = computed(() => {
+  return getCurrentCardDetails.value.transactions.slice(0, 4)
 })
 
 const cardActions = [
@@ -118,10 +121,9 @@ const cardActions = [
 ]
 
 const updateCardStatus = async () => {
-  const cardName = currentCardDetails.value?.cardName
   const newCardStatus = isFrozen.value ? CardStatus.UNFROZEN : CardStatus.FROZEN
   try {
-    await store.dispatchUpdateDebitCardStatus(cardName, newCardStatus)
+    await store.dispatchUpdateDebitCardStatus(currentCardIndex.value, newCardStatus)
   } catch (error) {
     // We can handle the error here by showing a message to the user
     console.error('Error updating card status:', error)
@@ -129,7 +131,7 @@ const updateCardStatus = async () => {
 }
 
 const currentCard = (index: number) => {
-  currentCardDetails.value = debitCardsDetails.value[index]
+  currentCardIndex.value = index
 }
 
 const getFinanceText = (type: TransactionType): string => {
@@ -140,10 +142,6 @@ const getAmountWithUnit = (type: TransactionType, amount: number): string => {
   const sign = type === TransactionType.REFUND ? '+' : '-'
   return `${sign} S$ ${amount.toLocaleString()}`
 }
-
-const getTransactions = computed(() => {
-  return currentCardDetails.value?.transactions.slice(0, 4)
-})
 
 onMounted(() => {
   currentCard(0)
@@ -163,7 +161,7 @@ onMounted(() => {
   flex: 1;
 
   .card-action {
-    @include flex(row, space-between, center);
+    @include flex(row, space-between, flex-start);
     margin-top: 16px;
     padding: 26px;
     background-color: $lily-white;
@@ -264,6 +262,10 @@ onMounted(() => {
     text-align: center;
     background-color: $mint-cream;
     color: $green;
+  }
+
+  .details {
+    padding: 16px;
   }
 }
 

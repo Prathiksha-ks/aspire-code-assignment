@@ -54,10 +54,10 @@ const updateDebitCardStatus = async (
 ): ApiResponse<DebitCard[]> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (request.cardName && request.cardStatus) {
-        const cardIndex = debitCardsDetails.findIndex((card) => card.cardName === request.cardName)
-        if (cardIndex !== -1) {
-          debitCardsDetails[cardIndex].cardStatus = request.cardStatus
+      const { cardIndex, cardStatus, debitCardsDetails } = request
+      if (cardIndex >= 0 && cardStatus) {
+        if (cardIndex < debitCardsDetails.length) {
+          debitCardsDetails[cardIndex].cardStatus = cardStatus
           resolve({
             isSuccess: true,
             statusCode: 200,

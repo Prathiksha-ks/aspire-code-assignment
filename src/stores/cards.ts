@@ -28,9 +28,13 @@ export const useCardsStore = defineStore('cards', () => {
     }
   }
 
-  const dispatchUpdateDebitCardStatus = async (cardName: string, cardStatus: CardStatus) => {
+  const dispatchUpdateDebitCardStatus = async (cardIndex: number, cardStatus: CardStatus) => {
     try {
-      const response = await updateDebitCardStatus({ cardName, cardStatus })
+      const response = await updateDebitCardStatus({
+        cardIndex,
+        cardStatus,
+        debitCardsDetails: debitCardsDetails.value,
+      })
       if (response.isSuccess) {
         debitCardsDetails.value = response.responseData as DebitCard[]
       }
