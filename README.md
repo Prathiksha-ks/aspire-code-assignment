@@ -1,5 +1,7 @@
 # aspire-code-assignment
 
+Assignment hosted link for reference - https://aspire-app-code-challenge.web.app
+
 This template should help get started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
