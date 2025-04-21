@@ -31,11 +31,9 @@
           <ul v-if="getTransactions.length">
             <li v-for="transaction in getTransactions" :key="transaction.id">
               <div class="right">
-                <img
-                  :src="`/src/assets/${transaction.image}.svg`"
-                  alt="transaction icon"
-                  class="transaction-icon"
-                />
+                <div class="transaction-icon">
+                  <img :src="`/src/assets/${transaction.image}.svg`" alt="transaction icon" />
+                </div>
                 <div class="content">
                   <p class="name">{{ transaction.name }}</p>
                   <p class="date">{{ transaction.date }}</p>
@@ -208,7 +206,9 @@ onMounted(() => {
   .right {
     @include flex;
     .transaction-icon {
-      padding: 16px 12px;
+      @include flex(row, center, center);
+      width: 48px;
+      height: 48px;
       background-color: $snow-white;
       border-radius: 50%;
     }

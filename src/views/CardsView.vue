@@ -67,7 +67,7 @@ const fetchDebitCards = async () => {
 
 <style lang="scss" scoped>
 .cards-view {
-  width: 100%;
+  width: calc(100% - 340px);
   padding: 60px;
 
   .title {
@@ -151,6 +151,7 @@ const fetchDebitCards = async () => {
 // Mobile styles
 @media (max-width: 1024px) {
   .cards-view {
+    width: 100%;
     padding: 0 24px 30px;
 
     .add-card-btn {
